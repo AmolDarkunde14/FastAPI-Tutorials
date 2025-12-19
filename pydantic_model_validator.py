@@ -11,6 +11,12 @@ class Patient(BaseModel):
     allergies: list[str]
     contact_details: dict[str, str]
 
+    @model_validator(mode='after')
+    def validate_emergency_contact(cls, model):
+        if model.age > 60 and 'emergency' not in model.contact_details:
+            return ValueError('Patient older than 60 must have an emergenct contact.')
+        return model
+
 def insert_patient_data(patient: Patient):
 
     print(patient.name)
